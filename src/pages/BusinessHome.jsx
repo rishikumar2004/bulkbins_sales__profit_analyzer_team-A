@@ -148,7 +148,7 @@ const BusinessHome = () => {
                 fetchMembers();
             }
         }
-    }, [activeTab, currentBusiness]);
+    }, [activeTab, currentBusiness, reportGranularity, transactions]);
 
     const fetchInventory = async () => {
         try {
@@ -243,7 +243,7 @@ const BusinessHome = () => {
     const fetchAiData = async () => {
         try {
             const [pnlRes, predRes, insightRes, starRes] = await Promise.all([
-                fetch(`http://localhost:5000/api/businesses/${id}/ai/pnl`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`http://localhost:5000/api/businesses/${id}/ai/pnl?granularity=${reportGranularity}`, { headers: { 'Authorization': `Bearer ${token}` } }),
                 fetch(`http://localhost:5000/api/businesses/${id}/ai/predictions`, { headers: { 'Authorization': `Bearer ${token}` } }),
                 fetch(`http://localhost:5000/api/businesses/${id}/ai/inventory-insights`, { headers: { 'Authorization': `Bearer ${token}` } }),
                 fetch(`http://localhost:5000/api/businesses/${id}/ai/profit-stars`, { headers: { 'Authorization': `Bearer ${token}` } })

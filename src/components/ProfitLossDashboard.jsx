@@ -21,33 +21,8 @@ const ProfitLossDashboard = ({ data, theme, reportGranularity = 'monthly' }) => 
     const tooltipBorder = isDark ? '#ffffff10' : '#e2e8f0';
     const tooltipText = isDark ? '#f8fafc' : '#0f172a';
 
-    // Date filtering function based on report frequency
-    const filterDataByFrequency = (data, frequency) => {
-        const now = new Date();
-        const cutoffDate = new Date();
-
-        switch (frequency) {
-            case 'daily':
-                cutoffDate.setHours(cutoffDate.getHours() - 24);
-                break;
-            case 'weekly':
-                cutoffDate.setDate(cutoffDate.getDate() - 7);
-                break;
-            case 'monthly':
-                cutoffDate.setDate(cutoffDate.getDate() - 30);
-                break;
-            default:
-                return data;
-        }
-
-        return data.filter(item => {
-            const itemDate = new Date(item.month || item.date);
-            return itemDate >= cutoffDate;
-        });
-    };
-
-    // Apply frequency filter
-    const filteredData = filterDataByFrequency(data, reportGranularity);
+    // Backend now handles filtering based on granularity
+    const filteredData = data;
 
     const totalSales = filteredData.reduce((sum, item) => sum + item.sales, 0);
     const totalExpenses = filteredData.reduce((sum, item) => sum + item.expenses, 0);

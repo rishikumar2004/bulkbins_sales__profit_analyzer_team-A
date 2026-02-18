@@ -722,35 +722,63 @@ def get_predictions(business_id):
 @app.route('/api/businesses/<int:business_id>/ai/pnl', methods=['GET'])
 @role_required(['Owner', 'Accountant', 'Analyst'])
 def get_pnl_data(business_id):
-    # Get monthly sales vs expenses for the last 6 months
-    now = datetime.utcnow()
-    six_months_ago = now - timedelta(days=180)
+    # Get granularity from query params
+    granularity = request.args.get('granularity', 'monthly')
     
+    now = datetime.utcnow()
+    data = {}
+    
+    if granularity == 'daily':
+        # Last 30 days
+        start_date = now - timedelta(days=30)
+        label_fmt = '%Y-%m-%d'
+    elif granularity == 'weekly':
+        # Last 12 weeks
+        start_date = now - timedelta(weeks=12)
+        # We'll use start of week as key
+    else:
+        # Monthly (default) - Last 6 months
+        start_date = now - timedelta(days=180)
+        label_fmt = '%Y-%m'
+
     txns = Transaction.query.filter(
         Transaction.business_id == business_id,
-        Transaction.timestamp >= six_months_ago
+        Transaction.timestamp >= start_date,
+        Transaction.timestamp <= now
     ).all()
     
-    data = {}
     for t in txns:
-        month = t.timestamp.strftime('%Y-%m')
-        if month not in data:
-            data[month] = {"sales": 0, "expenses": 0, "profit": 0, "cogs": 0}
-        if t.type == 'Sale':
-            data[month]["sales"] += t.amount
-            data[month]["cogs"] += (t.cogs or 0)
+        if granularity == 'daily':
+            key = t.timestamp.strftime('%Y-%m-%d')
+        elif granularity == 'weekly':
+            # ISO Year + Week number
+            key = t.timestamp.strftime('%Y-W%U') 
         else:
-            data[month]["expenses"] += t.amount
-        data[month]["profit"] += (t.profit or 0)
+            key = t.timestamp.strftime('%Y-%m')
             
-    sorted_months = sorted(data.keys())
+        if key not in data:
+            data[key] = {"sales": 0, "expenses": 0, "profit": 0, "cogs": 0, "date": t.timestamp}
+
+        if t.type == 'Sale':
+            data[key]["sales"] += t.amount
+            data[key]["cogs"] += (t.cogs or 0)
+        else:
+            data[key]["expenses"] += t.amount
+        data[key]["profit"] += (t.profit or 0)
+            
+    sorted_keys = sorted(data.keys())
+    
+    # Fill gaps? For now, just return what we have, frontend chart usually handles gaps or we can zero-fill.
+    # Let's zero-fill for smoother charts if needed, but let's stick to simple first.
+    
     pnl_history = [{
-        "month": m,
-        "sales": data[m]["sales"],
-        "expenses": data[m]["expenses"],
-        "cogs": data[m]["cogs"],
-        "profit": data[m]["profit"]
-    } for m in sorted_months]
+        "month": k if granularity == 'monthly' else k, # Keep 'month' key for compatibility or rename in frontend
+        "label": k, # New key for generic use
+        "sales": data[k]["sales"],
+        "expenses": data[k]["expenses"],
+        "cogs": data[k]["cogs"],
+        "profit": data[k]["profit"]
+    } for k in sorted_keys]
     
     return jsonify(pnl_history), 200
 
