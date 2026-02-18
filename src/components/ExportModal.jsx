@@ -3,7 +3,7 @@ import { X, Download, Mail, FileText, Table, FileSpreadsheet, Calendar, Clock, C
 import toast from 'react-hot-toast';
 import CustomSelect from './CustomSelect';
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../apiConfig';
 
 const ExportModal = ({ isOpen, onClose, businessId, businessName }) => {
     const [formats, setFormats] = useState(['pdf']);

@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import CustomSelect from '../components/CustomSelect';
 import ExportModal from '../components/ExportModal';
 import Logo from '../assets/logo.png';
+import { API_URL } from '../apiConfig';
 
 
 const BusinessHome = () => {
@@ -152,7 +153,7 @@ const BusinessHome = () => {
 
     const fetchInventory = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/inventory`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/inventory`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -164,7 +165,7 @@ const BusinessHome = () => {
 
     const fetchTransactions = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transactions?limit=100`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transactions?limit=100`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -181,7 +182,7 @@ const BusinessHome = () => {
     const fetchMembers = async () => {
         setIsLoadingMembers(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/members`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/members`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -195,7 +196,7 @@ const BusinessHome = () => {
     const handleRemoveMember = async (userId) => {
         if (!window.confirm('Are you sure you want to remove this member?')) return;
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/members/${userId}`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/members/${userId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -215,7 +216,7 @@ const BusinessHome = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/members/${editingMember.user_id}`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/members/${editingMember.user_id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -243,10 +244,10 @@ const BusinessHome = () => {
     const fetchAiData = async () => {
         try {
             const [pnlRes, predRes, insightRes, starRes] = await Promise.all([
-                fetch(`http://localhost:5000/api/businesses/${id}/ai/pnl?granularity=${reportGranularity}`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch(`http://localhost:5000/api/businesses/${id}/ai/predictions`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch(`http://localhost:5000/api/businesses/${id}/ai/inventory-insights`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch(`http://localhost:5000/api/businesses/${id}/ai/profit-stars`, { headers: { 'Authorization': `Bearer ${token}` } })
+                fetch(`${API_URL}/businesses/${id}/ai/pnl?granularity=${reportGranularity}`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`${API_URL}/businesses/${id}/ai/predictions`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`${API_URL}/businesses/${id}/ai/inventory-insights`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`${API_URL}/businesses/${id}/ai/profit-stars`, { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
             if (pnlRes.ok) setPnlData(await pnlRes.json());
             if (predRes.ok) setAiPredictions(await predRes.json());
@@ -273,7 +274,7 @@ const BusinessHome = () => {
         const toastId = toast.loading("Importing transactions...");
 
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transaction-import`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transaction-import`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -307,7 +308,7 @@ const BusinessHome = () => {
         const toastId = toast.loading('Importing transactions...');
 
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transaction-import`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transaction-import`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -342,7 +343,7 @@ const BusinessHome = () => {
 
         const toastId = toast.loading('Importing transactions...');
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transaction-import`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transaction-import`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -396,7 +397,7 @@ const BusinessHome = () => {
     const handleAddItem = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/inventory`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/inventory`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -454,7 +455,7 @@ const BusinessHome = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transactions`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transactions`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -489,7 +490,7 @@ const BusinessHome = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transactions/${editingTransaction.id}`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transactions/${editingTransaction.id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -516,7 +517,7 @@ const BusinessHome = () => {
     const handleDeleteTransaction = async (transactionId) => {
         if (!window.confirm('Are you sure you want to delete this transaction?')) return;
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/transactions/${transactionId}`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/transactions/${transactionId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -532,7 +533,7 @@ const BusinessHome = () => {
 
     const handleRestock = async (item, additionalQty) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${id}/inventory/${item.id}`, {
+            const response = await fetch(`${API_URL}/businesses/${id}/inventory/${item.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -553,7 +554,7 @@ const BusinessHome = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/businesses/${currentBusiness.id}/members`, {
+            const response = await fetch(`${API_URL}/businesses/${currentBusiness.id}/members`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1098,8 +1099,8 @@ const BusinessHome = () => {
                                         e.preventDefault();
                                         const method = isEditingItem ? 'PUT' : 'POST';
                                         const url = isEditingItem
-                                            ? `http://localhost:5000/api/businesses/${id}/inventory/${editingItem.id}`
-                                            : `http://localhost:5000/api/businesses/${id}/inventory`;
+                                            ? `${API_URL}/businesses/${id}/inventory/${editingItem.id}`
+                                            : `${API_URL}/businesses/${id}/inventory`;
 
                                         try {
                                             const response = await fetch(url, {
@@ -1337,7 +1338,7 @@ const BusinessHome = () => {
                                                                                     onClick={async () => {
                                                                                         if (!confirm('Archive this item from inventory?')) return;
                                                                                         try {
-                                                                                            const response = await fetch(`http://localhost:5000/api/businesses/${id}/inventory/${item.id}`, {
+                                                                                            const response = await fetch(`${API_URL}/businesses/${id}/inventory/${item.id}`, {
                                                                                                 method: 'DELETE',
                                                                                                 headers: { 'Authorization': `Bearer ${token}` }
                                                                                             });

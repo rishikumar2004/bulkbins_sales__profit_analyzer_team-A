@@ -17,10 +17,16 @@ app = Flask(__name__)
 application = app
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'bulkbins.db')
+# Production Database fallback
+default_db = 'sqlite:///' + os.path.join(basedir, 'bulkbins.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', default_db)
+# Handle Render's postgres:// vs postgresql://
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'bulkbins-premium-key-2026'
-app.config['JWT_SECRET_KEY'] = 'jwt-secret-bulkbins-2026'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bulkbins-premium-key-2026')
+app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-bulkbins-2026')
 app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'uploads/receipts')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -44,11 +50,16 @@ app.register_blueprint(ai_bp, url_prefix='/api')
 app.register_blueprint(export_bp, url_prefix='/api')
 
 # Configure CORS to allow requests from frontend
+allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*').split(',')
 CORS(app, 
-     resources={r"/api/*": {"origins": "*"}},
+     resources={r"/api/*": {"origins": allowed_origins}},
      allow_headers=["Content-Type", "Authorization"],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
      supports_credentials=True)
+
+# Initialize database
+with app.app_context():
+    db.create_all()
 from business import role_required, get_member_role
 
 def master_admin_required():
@@ -938,6 +949,6 @@ def import_transactions(business_id):
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True, port=5000)
+    # Use PORT from environment for local testing if needed
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)

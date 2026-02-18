@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../apiConfig';
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../apiConfig';
 
 const MasterAdminDashboard = () => {
     const { token, logout, user } = useAuth();

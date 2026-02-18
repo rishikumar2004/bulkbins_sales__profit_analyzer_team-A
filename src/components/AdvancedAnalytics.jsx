@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../apiConfig';
 
 ChartJS.register(
     CategoryScale,
@@ -35,7 +36,7 @@ const AdvancedAnalytics = ({ businessId, onClose, theme }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/businesses/${businessId}/ai/advanced-analytics`, {
+                const response = await fetch(`${API_URL}/businesses/${businessId}/ai/advanced-analytics`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
