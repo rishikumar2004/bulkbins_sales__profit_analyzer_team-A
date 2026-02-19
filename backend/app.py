@@ -959,3 +959,13 @@ if __name__ == '__main__':
 def home():
     return "BulkBins Sales Profit Analyzer Backend Running 🚀"
 
+
+from flask_cors import CORS
+
+app = Flask(__name__)
+
+CORS(app, origins=[
+    "https://bulkbins-sales-profit-analyzer-team-a-front-bf4dmcdl.vercel.app",
+    "https://bulkbins-sales-profit-analyzer-team-a-front.vercel.app"
+])
+
