@@ -12,6 +12,14 @@ from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from functools import wraps
 
+from flask_cors import CORS
+
+app = Flask(__name__)
+
+CORS(app, origins=[
+    "https://bulkbins-sales-profit-analyzer-team-a-front-bf4dmcdl.vercel.app",
+    "https://bulkbins-sales-profit-analyzer-team-a-front.vercel.app"
+])
 
 app = Flask(__name__)
 application = app
@@ -948,24 +956,19 @@ def import_transactions(business_id):
 
 
 
+@app.route("/")
+def home():
+    return "BulkBins Sales Profit Analyzer Backend Running 🚀"
+
+
+
 if __name__ == '__main__':
     # Use PORT from environment for local testing if needed
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
 
 
-
-@app.route("/")
-def home():
-    return "BulkBins Sales Profit Analyzer Backend Running 🚀"
-
-
-from flask_cors import CORS
-
-app = Flask(__name__)
-
-CORS(app, origins=[
-    "https://bulkbins-sales-profit-analyzer-team-a-front-bf4dmcdl.vercel.app",
-    "https://bulkbins-sales-profit-analyzer-team-a-front.vercel.app"
-])
-
+if __name__ == '__main__':
+    # Use PORT from environment for local testing if needed
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
