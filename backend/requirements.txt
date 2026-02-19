@@ -9,7 +9,6 @@ fpdf2==2.7.6
 matplotlib==3.8.2
 xlsxwriter==3.1.9
 python-dotenv==1.0.1
-gunicorn==21.2.0
 pandas==2.2.2
 numpy==1.26.4
-python==3.10.13
+gunicorn==21.2.0
