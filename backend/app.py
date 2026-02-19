@@ -20,8 +20,6 @@ CORS(app, origins=[
     "https://bulkbins-sales-profit-analyzer-team-a-front-bf4dmcdl.vercel.app",
     "https://bulkbins-sales-profit-analyzer-team-a-front.vercel.app"
 ])
-
-app = Flask(__name__)
 application = app
 
 basedir = os.path.abspath(os.path.dirname(__file__))
