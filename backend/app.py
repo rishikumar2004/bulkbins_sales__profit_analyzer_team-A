@@ -54,12 +54,7 @@ app.register_blueprint(export_bp, url_prefix='/api')
 # Configure CORS to allow requests from frontend
 CORS(
     app,
-    resources={
-        r"/api/*": {
-            "origins": "https://bulkbinssalesprofitanalyzerteam-a-front.vercel.app"
-        }
-    },
-    supports_credentials=False,
+    resources={r"/api/*": {"origins": "*"}},
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )
