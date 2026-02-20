@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from models import db, User, Business, BusinessMember, Transaction, InventoryItem
 import os
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 load_dotenv()
 from datetime import datetime, timedelta
@@ -16,7 +17,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, supports_credentials=True)
 
 application = app
 
