@@ -16,12 +16,6 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(
-    app,
-    resources={r"/api/*": {"origins": "*"}},
-    supports_credentials=True
-)
-
 application = app
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -58,13 +52,18 @@ app.register_blueprint(ai_bp, url_prefix='/api')
 app.register_blueprint(export_bp, url_prefix='/api')
 
 # Configure CORS to allow requests from frontend
-allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*').split(',')
-CORS(app, 
-     resources={r"/api/*": {"origins": allowed_origins}},
-     allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     supports_credentials=True)
+allowed_origins = os.environ.get(
+    "ALLOWED_ORIGINS",
+    "https://bulkbinssalesprofitanalyzerteam-a-front.vercel.app"
+).split(",")
 
+CORS(
+    app,
+    resources={r"/api/*": {"origins": allowed_origins}},
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    supports_credentials=True
+)
 # Initialize database
 with app.app_context():
     db.create_all()
