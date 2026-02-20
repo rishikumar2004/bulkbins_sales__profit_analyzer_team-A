@@ -88,11 +88,9 @@ def health_check():
     return jsonify({"status": "healthy", "service": "BulkBins Backend"}), 200
 
 # Auth Routes
-@app.route('/api/signup', methods=['POST', 'OPTIONS'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
     # Handle preflight request
-    if request.method == 'OPTIONS':
-        return '', 200
     
     data = request.get_json()
     if User.query.filter_by(email=data.get('email')).first():
