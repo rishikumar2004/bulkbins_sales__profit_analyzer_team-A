@@ -59,7 +59,7 @@ CORS(
             "origins": "https://bulkbinssalesprofitanalyzerteam-a-front.vercel.app"
         }
     },
-    supports_credentials=True,
+    supports_credentials=False,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )
